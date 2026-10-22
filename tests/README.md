@@ -2,12 +2,14 @@
 
 ## Synthetic CI checks
 
-`PYTHONPATH=src python -m pytest -q tests/test_io_guards.py` checks CSV replacement,
+`PYTHONPATH=src python -m pytest -q tests/test_io_guards.py tests/test_release_guard.py` checks CSV replacement,
 backup preservation, non-writing dry runs and failure preservation using only
 synthetic DataFrames and temporary directories. It needs pytest and pandas, not
 the full ML stack, participant fixtures or credentials. GitHub Actions executes
 these checks on Ubuntu 24.04 and 26.04. This is not timezone/CLI or end-to-end ETL
-coverage and does not replace the domain audits described below.
+coverage and does not replace the domain audits described below. Release-guard
+tests use isolated temporary git repositories to verify no-tag skipping, valid
+metadata resolution and rejection of missing notes, without publishing anything.
 
 ## Legacy pytest suite (v4.2+)
 
