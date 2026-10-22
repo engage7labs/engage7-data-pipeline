@@ -4,9 +4,12 @@ on:
   push:
     branches: [ v4-main ]
 
+permissions:
+  contents: read
+
 jobs:
   release-dry-run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -14,8 +17,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
-      - name: Make dry-run final
+          python-version: '3.11'
+      - name: Inspect existing release-draft plan
         run: |
           set -e
-          make -n release-final RELEASE_VERSION=0.0.0-test || exit 1
+          make --dry-run release-draft NEXT_TAG=v0.0.0-test

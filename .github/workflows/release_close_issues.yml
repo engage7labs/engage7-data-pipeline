@@ -4,7 +4,7 @@ on:
     types: [published]
 jobs:
   close:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       issues: write
@@ -21,13 +21,13 @@ jobs:
             exit 0
           fi
           python - <<'PY' > parsed.txt
-import sys, yaml, os
-cfg = yaml.safe_load(open('.github/close_on_release.yml','r',encoding='utf-8'))
-ver = (cfg or {}).get('version','')
-issues = (cfg or {}).get('issues',[])
-print(f"version={ver}")
-print("issues=" + ",".join(str(i) for i in issues))
-PY
+          import sys, yaml, os
+          cfg = yaml.safe_load(open('.github/close_on_release.yml','r',encoding='utf-8'))
+          ver = (cfg or {}).get('version','')
+          issues = (cfg or {}).get('issues',[])
+          print(f"version={ver}")
+          print("issues=" + ",".join(str(i) for i in issues))
+          PY
           cat parsed.txt | while IFS= read -r line; do echo "$line" >> $GITHUB_OUTPUT; done
       - name: Maybe close
         if: steps.cfg.outputs.no_config != 'true'

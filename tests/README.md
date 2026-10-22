@@ -1,4 +1,15 @@
-# Tests Directory — Deprecated (v4.2+)
+# Tests and QA checks
+
+## Synthetic CI checks
+
+`PYTHONPATH=src python -m pytest -q tests/test_io_guards.py` checks CSV replacement,
+backup preservation, non-writing dry runs and failure preservation using only
+synthetic DataFrames and temporary directories. It needs pytest and pandas, not
+the full ML stack, participant fixtures or credentials. GitHub Actions executes
+these checks on Ubuntu 24.04 and 26.04. This is not timezone/CLI or end-to-end ETL
+coverage and does not replace the domain audits described below.
+
+## Legacy pytest suite (v4.2+)
 
 ## Status: ⚠️ Legacy pytest tests removed
 
@@ -6,7 +17,8 @@ This directory previously contained pytest-based unit tests created during explo
 
 ## Current QA Strategy (v4.2+)
 
-The project now uses a **domain-specific ETL audit system** instead of pytest:
+Data-dependent pipeline validation uses a **domain-specific ETL audit system**;
+the synthetic CI unit tests above complement it.
 
 ### ETL Audit Module
 
@@ -37,7 +49,7 @@ make qc-all PID=P000001 SNAPSHOT=2025-11-07
 - `0` = PASS (all checks passed)
 - `1` = FAIL (critical issues found)
 
-### Why Not pytest?
+### Why domain audits for pipeline data?
 
 1. **Domain-specific:** ETL audits are tailored to physiological data QC
 2. **Integrated:** Audits run as part of pipeline workflow
