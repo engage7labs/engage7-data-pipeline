@@ -18,23 +18,31 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Resolve an existing release tag
+        id: release
+        run: bash .github/scripts/resolve_release.sh
+
       - name: Setup Python
+        if: steps.release.outputs.publish == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: steps.release.outputs.publish == 'true'
         run: |
           pip install -r requirements/dev.txt || true
           pip install jinja2 || true
 
       - name: Verify release notes and changelog
+        if: steps.release.outputs.publish == 'true'
         run: |
           VERSION=$(git describe --tags --abbrev=0)
           test -f docs/release_notes/release_notes_${VERSION#v}.md || echo "⚠️ Missing release notes for ${VERSION}"
           echo "Preparing release for ${VERSION}"
 
       - name: Publish GitHub Release
+        if: steps.release.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
